@@ -11,18 +11,13 @@ export const Header = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/recipes">
+                  Recipes
+                </Link>
+              </li>
+              <li>
                 <Link href="/myrecipes">
                   My Recipes
-                </Link>
-              </li>
-              <li>
-                <Link href="/upgrade">
-                  Upgrade
-                </Link>
-              </li>
-              <li>
-                <Link href="/faqs">
-                  FAQS
                 </Link>
               </li>
             </ul>
