@@ -1,0 +1,46 @@
+.Recipe
+  display: flex
+  flex-direction: column
+  align-items: center
+  & > h3
+    text-align: center
+    font-size: 3rem
+    margin-bottom: 2rem
+  &__grid
+    display: grid
+    width: 80%
+    gap: 2rem
+    max-width: 1200px
+    margin: 0 auto
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
+    & > article
+      display: flex
+      flex-direction: column
+      overflow: hidden
+      border-radius: 1rem
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.1)
+      background-color: white
+      transition: transform 0.2s ease
+      &:hover
+        transform: scale(1.03)
+      & > img
+        width: 100%
+        height: 200px
+        object-fit: cover
+        display: block
+  &__info
+    text-align: center
+    border-radius: 0.5rem
+    padding: 1rem
+    p
+      font-size: 1.0rem
+      font-weight: 500
+      color: black
+      margin: 0.5rem 0
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+    h3
+      font-size: 1.4rem
+      font-weight: 700
+      color: text-color

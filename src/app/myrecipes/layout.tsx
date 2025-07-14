@@ -1,7 +1,10 @@
-export default function Layout({ children }: { children: React.ReactNode}) {
+import { Recipe } from "app/components/recipe/Recipe";
+
+
+export default function RecipeLayout({ children }: { children: React.ReactNode}) {
     return (
         <main>
-            <nav>Navegacion de las categorias</nav>
+            <Recipe />
             {children}
         </main>
     )
