@@ -1,6 +1,7 @@
 import { Outfit } from "next/font/google";
 import { Header } from "app/components/shared/Header";
 import 'app/sass/globals.sass'
+import { Sidebar } from "app/components/shared/Sidebar";
 
 const outfit = Outfit({
   weight: ["100", "300", "500", "700"],
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={outfit.className}>
         <Header />
+        <Sidebar />
         {children}
       </body>
     </html>

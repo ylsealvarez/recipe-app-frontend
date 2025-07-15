@@ -1,5 +1,9 @@
-export default function Recipes() {
+import { Recipe } from 'app/components/recipe/Recipe' 
+
+export default function RecipesIndexPage() {
     return(
-        <h1>Recipes</h1>
+        <main>
+            <Recipe />
+        </main>
     )
 }

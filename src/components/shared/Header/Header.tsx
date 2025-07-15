@@ -15,11 +15,6 @@ export const Header = () => {
                   Recipes
                 </Link>
               </li>
-              <li>
-                <Link href="/myrecipes">
-                  My Recipes
-                </Link>
-              </li>
             </ul>
           </nav>
         </header>)
