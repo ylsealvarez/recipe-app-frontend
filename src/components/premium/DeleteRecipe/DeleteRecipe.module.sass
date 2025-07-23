@@ -1,0 +1,44 @@
+.DeleteRecipe
+  display: block
+  margin: 1.8rem auto 5rem auto
+  max-width: 30rem
+  &__title
+    font-size: 2rem
+    font-weight: 700
+    margin-bottom: 3rem
+    color:rgb(203, 73, 33)
+    background-clip: text
+  &__form
+    display: grid
+    padding-bottom: 10rem
+    grid-template-areas: "a a" "b b"
+    column-gap: 1rem
+    row-gap: 1.8rem
+    & > input[type="text"]
+      color: $text-color
+      font-weight: 300
+      padding: 0.5rem 1rem
+      background: transparent
+      border: none
+      border-bottom: 1px solid $border-color
+      font-size: 1.1rem
+      &:focus
+        outline: none
+        border-bottom: 1px solid $main-contrast
+    & > input[name="idRecipe"]
+      grid-area: a
+    & > input[name="submit"]
+      grid-area: b
+      border: 1px solid $main-contrast
+      background: transparent
+      color: rgb(203, 73, 33)
+      padding: 1rem
+      font-weight: 700
+      font-size: 1rem
+      text-transform: uppercase
+      cursor: pointer
+      border-radius: 1.5rem
+  &__error
+    color: red
+    font-weight: 300
+    margin-top: 1rem

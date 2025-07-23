@@ -1,9 +1,10 @@
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { fetcher } from '../../../../lib/fetcher'
+import { RecipeReviews } from './RecipeReviews'
 
 async function getRecipe(id: string) {
   const res = await fetch(`http://localhost:8080/api/recipes/${id}`, {
-    // Siguiente línea previene cache para desarrollo
     cache: 'no-store',
   })
 
@@ -11,9 +12,9 @@ async function getRecipe(id: string) {
   return res.json()
 }
 
-export default async function RecipePage({ params }: { params: { id: string } }) {
-  const recipe = await getRecipe(params.id)
-
+export default async function RecipePage({ params }: { params: { id: string }}) {
+  const { id } = params
+  const recipe = await getRecipe(id)
   if (!recipe) return notFound()
 
   return (
@@ -34,6 +35,8 @@ export default async function RecipePage({ params }: { params: { id: string } })
       <p><strong>Rating:</strong> {recipe.rating}</p>
       <p><strong>Ingredients</strong> {recipe.ingredients}</p>
       <p><strong>Steps</strong> {recipe.steps}</p>
+
+      <RecipeReviews idRecipe={id} />
     </main>
   )
 }

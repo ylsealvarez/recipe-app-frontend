@@ -1,6 +1,9 @@
 "use client"
+import Link from 'next/link';
 import styles from './Sidebar.module.sass'
 import { useState } from 'react';
+import { IoMdArrowDropdown } from "react-icons/io";
+import { IoMdArrowDropright } from "react-icons/io";
 
 export const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -16,10 +19,13 @@ export const Sidebar = () => {
             <aside className={`${styles.Sidebar} ${isOpen ? styles.open : ''}`}>
                 <nav>
                     <ul className={styles.Sidebar__list}>
-                        <li><span>My Recipes</span></li>
-                        <li><span>Create Recipe</span></li>
-                        <li><span>Modify Recipe</span></li>
-                        <li><span>Delete Recipe</span></li>
+                        <Link href="/myrecipes">My Recipes</Link>
+                        <span>Professional plan<IoMdArrowDropdown /></span>
+                        <div className={styles.Sidebar__links}>
+                            <Link href="/premium/create"><IoMdArrowDropright />Create Recipe</Link>
+                            <Link href="/premium/modify"><IoMdArrowDropright />Modify Recipe</Link>
+                            <Link href="/premium/delete"><IoMdArrowDropright />Delete Recipe</Link>
+                        </div>
                     </ul>
                 </nav>
             </aside></>

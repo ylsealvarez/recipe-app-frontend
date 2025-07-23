@@ -19,7 +19,7 @@ export const Header = () => {
       </ul>
     </nav>
     <div className={styles.Header__links}>
-      <Link href="" className={styles.Header__gopro}>Go PRO <FaCrown /></Link>
+      <Link href="/gopro" className={styles.Header__gopro}>Go PRO <FaCrown /></Link>
       <div className={styles.Header__user}>
         <Link href="/login">Login</Link>
         <Link href="/signup">Sign Up</Link>
