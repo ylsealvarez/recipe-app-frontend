@@ -11,20 +11,22 @@ const plans = [
     title: 'Premium User',
     description: 'Advanced features for eager learners. Rating recipes and more advanced features.',
     price: '€9.99/month',
+    priceId: 'price_1RoAkbQ3I1si7olRbXcXdPFv'
   },
   {
     title: 'Professional User',
     description: 'All features with priority support. Publishing verified recipes, promoting culinary content.',
     price: '€19.99/month',
+    priceId: 'price_1RoAn0Q3I1si7olRKhGUklgw'
   },
 ];
 
 export default function PlansPage() {
   return (
     <div className={styles.PlansPage}>
-      {plans.map((plan, title) => (
+      {plans.map((plan, idx) => (
         <PlanCard
-          key={title}
+          key={plan.priceId ?? idx}
           plan={plan}
         />
       ))}

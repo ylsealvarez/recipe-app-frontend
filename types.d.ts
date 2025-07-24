@@ -1,4 +1,5 @@
 type PlansType = {
+    priceId?: string;
     title: string;
     description: string;
     price: string;

@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { fetcher } from '../../../../lib/fetcher'
 import { RecipeReviews } from './RecipeReviews'
 
 async function getRecipe(id: string) {
