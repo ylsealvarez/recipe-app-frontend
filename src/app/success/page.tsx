@@ -3,26 +3,35 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import styles from './SuccessPage.module.sass';
+import { useSearchParams } from 'next/navigation';
 
 export default function SuccessPage() {
-  const [email, setEmail] = useState<string | null>(null);
+    const params = useSearchParams();
+    const mode = params.get('mode'); // 'payment' o 'subscription'
 
-  useEffect(() => {
-    const stored = window.localStorage.getItem('checkoutEmail');
-    if (stored) setEmail(stored);
-  }, []);
-
-  return (
-    <main className={styles.container}>
-      <h1 className={styles.title}>🎉 Payment Successful!</h1>
-      <p className={styles.message}>
-        {email
-          ? `A receipt has been sent to ${email}.`
-          : 'Thank you for your purchase. Your subscription is now active.'}
-      </p>
-      <Link href="/" className={styles.button}>
-        Back to Home
-      </Link>
-    </main>
-  );
+    return (
+        <main className={styles.container}>
+            {mode === 'payment' ? (
+                <>
+                    <h1 className={styles.title}>🎉 Recipe Purchased!</h1>
+                    <p className={styles.message}>
+                        Thank you for purchasing this premium recipe. Enjoy cooking!
+                    </p>
+                    <Link href="/recipes" className={styles.button}>
+                        Back to Recipes
+                    </Link>
+                </>
+            ) : (
+                <>
+                    <h1 className={styles.title}>🎉 Subscription Activated!</h1>
+                    <p className={styles.message}>
+                        Your subscription is now active. Happy exploring!
+                    </p>
+                    <Link href="/gopro" className={styles.button}>
+                        Go to Plans
+                    </Link>
+                </>
+            )}
+        </main>
+    );
 }

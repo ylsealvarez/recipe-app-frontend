@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import styles from './RecipeCard.module.sass'
+import { fetcher } from "../../../lib/fetcher";
 
 interface RecipeCardProps {
     recipe: Recipe
@@ -13,9 +14,10 @@ interface RecipeCardProps {
 
 export const RecipeCard = ({ recipe, currentUserId, initialFavorited = false }: RecipeCardProps) => {
     const [favorited, setFavorited] = useState(initialFavorited)
+    const [loading, setLoading] = useState(false);
 
 
-    // Opcional: cargar estado inicial si ya está en favoritos
+    const PREMIUM_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID!;
     useEffect(() => {
         // podrías hacer un fetch GET /api/recipes/favorites y ver si incluye este id
         // o recibir un prop “initialFavorited”
@@ -36,10 +38,30 @@ export const RecipeCard = ({ recipe, currentUserId, initialFavorited = false }: 
         setFavorited(f => !f)
     }
 
+    const handleBuy = async () => {
+        setLoading(true);
+        const { url } = await fetcher('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ priceId: PREMIUM_PRICE_ID, mode: 'payment', recipeId: recipe.idRecipe, }),
+            useApi: false,
+        });
+        window.location.href = url;
+    };
+
     return (
         <article className={styles.RecipeCard}>
             {recipe.isPremium && (
-                <span className={styles.premiumBadge}>Premium</span>
+                <div className={styles.premiumActions}>
+                    <span className={styles.premiumBadge}>Premium</span>
+                    <button
+                        onClick={handleBuy}
+                        disabled={loading}
+                        className={styles.buyButton}
+                    >
+                        {loading ? 'Processing…' : 'Buy Recipe'}
+                    </button>
+                </div>
             )}
             <Link href={`/recipes/${recipe.idRecipe}`}>
                 <Image

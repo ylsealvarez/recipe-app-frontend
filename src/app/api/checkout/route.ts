@@ -1,20 +1,40 @@
 import { NextResponse } from 'next/server';
 import stripe from '../../../../lib/stripe';
 
+type Body = { priceId: string; mode: 'payment' | 'subscription'; recipeId?: string };
+
 export async function POST(req: Request) {
-  const { priceId } = await req.json();
+    const { priceId, mode, recipeId } = (await req.json()) as Body;
 
-  console.log('Precio recibido:', priceId);
+    if (!priceId || !mode) {
+        return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
+    }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',         
-    line_items: [{ price: priceId, quantity: 1 }],
-    payment_method_types: ['card'],
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/gopro`,
-  });
+    const base = process.env.NEXT_PUBLIC_BASE_URL;
+    let successUrl: string;
+    let cancelUrl: string;
 
-  console.log('Session creada:', session);
+    if (mode === 'payment') {
+        // Para compras de receta
+        successUrl = `${base}/success?mode=payment`;
+        // Regresa a la página de la receta
+        if (!recipeId) {
+            return NextResponse.json({ error: 'Missing recipeId' }, { status: 400 });
+        }
+        cancelUrl = `${base}/recipes/${recipeId}`;
+    } else {
+        // Para suscripciones
+        successUrl = `${base}/success?mode=subscription`;
+        cancelUrl = `${base}/gopro`;
+    }
 
-  return NextResponse.json({ url: session.url });
+    const session = await stripe.checkout.sessions.create({
+        mode,
+        line_items: [{ price: priceId, quantity: 1 }],
+        payment_method_types: ['card'],
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+    });
+
+    return NextResponse.json({ url: session.url });
 }

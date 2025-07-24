@@ -17,23 +17,6 @@
     font-weight: bold
     border-radius: 0.25rem
 
-  .info
-    text-align: center
-    border-radius: 0.5rem
-    padding: 1rem
-    h4
-      font-size: 1.0rem
-      font-weight: 700
-      color: black
-      margin: 0.5rem 0
-      white-space: nowrap
-      overflow: hidden
-      text-overflow: ellipsis
-    h3
-      font-size: 1.4rem
-      font-weight: 700
-      color: text-color
-
   .favoriteButton
     position: absolute
     top: 0.5rem
@@ -43,3 +26,39 @@
     cursor: pointer
     font-size: 1.5rem
     color: rgb(203, 73, 33)
+
+  .buyButton
+    position: absolute
+    bottom: 0.5rem
+    right: 0.5rem
+    background-color: #28a745
+    color: white
+    padding: 0.5rem 1rem
+    border: none
+    border-radius: 0.25rem
+    font-weight: bold
+    cursor: pointer
+    &:disabled
+      opacity: 0.6
+      cursor: default
+
+  .info
+    text-align: center
+    border-radius: 0.5rem
+    padding: 1rem
+    h3
+      font-size: 1.4rem
+      font-weight: 700
+      color: text-color
+      margin: 0.5rem 0
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+    h4
+      font-size: 1.0rem
+      font-weight: 700
+      color: black
+      margin: 0.5rem 0
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis

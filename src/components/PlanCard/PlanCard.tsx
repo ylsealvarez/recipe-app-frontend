@@ -24,7 +24,7 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
         const { url } = await fetcher('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ priceId: plan.priceId }),
+            body: JSON.stringify({ priceId: plan.priceId, mode: 'subscription' }),
             useApi: false
         });
         console.log(url);
