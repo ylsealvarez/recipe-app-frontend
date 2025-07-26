@@ -1,28 +1,34 @@
+"use client"
 import Link from "next/link"
 import styles from './Header.module.sass'
 import { FaCrown } from "react-icons/fa6";
+import { useCurrentUser } from "app/hooks/useCurrentUser";
 
 export const Header = () => {
+  const user = useCurrentUser();
+
   return (<header className={styles.Header}>
     <nav>
       <ul className={styles.Header__list}>
-        <li>
-          <Link href="/">
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link href="/recipes">
-            Recipes
-          </Link>
-        </li>
+        <li><Link href="/">Home</Link></li>
+        <li><Link href="/recipes">Recipes</Link></li>
       </ul>
     </nav>
     <div className={styles.Header__links}>
       <Link href="/gopro" className={styles.Header__gopro}>Go PRO <FaCrown /></Link>
       <div className={styles.Header__user}>
-        <Link href="/login">Login</Link>
-        <Link href="/signup">Sign Up</Link>
+        {user?.firstname ?
+          (<><Link href="/my-account">Hello, {user.firstname}</Link>
+            <button onClick={() => {
+              localStorage.removeItem("jwt");
+              window.location.href = "/";
+            }}>
+              Logout
+            </button></>) :
+          (<><Link href="/login">Login</Link>
+            <Link href="/signup">Sign Up</Link>
+          </>
+          )}
       </div>
     </div>
   </header>)
