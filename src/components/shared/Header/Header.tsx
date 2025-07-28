@@ -2,10 +2,11 @@
 import Link from "next/link"
 import styles from './Header.module.sass'
 import { FaCrown } from "react-icons/fa6";
-import { useCurrentUser } from "app/hooks/useCurrentUser";
+import React from 'react';
+import { useAuth } from "app/context/AuthContext";
 
-export const Header = () => {
-  const user = useCurrentUser();
+export default function Header() {
+  const { user, logout } = useAuth();
 
   return (<header className={styles.Header}>
     <nav>
@@ -19,10 +20,7 @@ export const Header = () => {
       <div className={styles.Header__user}>
         {user?.firstname ?
           (<><Link href="/my-account">Hello, {user.firstname}</Link>
-            <button onClick={() => {
-              localStorage.removeItem("jwt");
-              window.location.href = "/";
-            }}>
+            <button onClick={logout}>
               Logout
             </button></>) :
           (<><Link href="/login">Login</Link>
