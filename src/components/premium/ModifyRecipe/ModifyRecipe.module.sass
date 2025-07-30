@@ -10,7 +10,7 @@
     background-clip: text
   &__form
     display: grid
-    grid-template-areas: "a b" "c d" "e f" "g g" "h h" "i j" "k k"
+    grid-template-areas: "a a" "b c" "d e" "f g" "h h" "i i" "j k" "l l"
     column-gap: 1rem
     row-gap: 2rem
     & > input[type="text"]
@@ -24,28 +24,30 @@
       &:focus
         outline: none
         border-bottom: 1px solid $main-contrast
-    & > input[name="idRecipe"]
+    & > input[name="isPremium"]
       grid-area: a
-    & > input[name="name"]
+    & > input[name="idRecipe"]
       grid-area: b
-    & > input[name="prepTime"]
+    & > input[name="name"]
       grid-area: c
-    & > input[name="cookTime"]
+    & > input[name="prepTime"]
       grid-area: d
-    & > input[name="totalTime"]
+    & > input[name="cookTime"]
       grid-area: e
-    & > input[name="servings"]
+    & > input[name="totalTime"]
       grid-area: f
-    & > input[name="ingredients"]
+    & > input[name="servings"]
       grid-area: g
-    & > input[name="steps"]
+    & > input[name="ingredients"]
       grid-area: h
-    & > input[name="type"]
+    & > input[name="steps"]
       grid-area: i
-    & > input[name="diet"]
+    & > input[name="type"]
       grid-area: j
-    & > input[name="submit"]
+    & > input[name="diet"]
       grid-area: k
+    & > input[name="submit"]
+      grid-area: l
       border: 1px solid $main-contrast
       background: transparent
       color: rgb(203, 73, 33)
@@ -55,6 +57,9 @@
       text-transform: uppercase
       cursor: pointer
       border-radius: 1.5rem
+      &:hover
+        background: rgb(203, 73, 33)
+        color: white
   &__error
     color: red
     font-weight: 300

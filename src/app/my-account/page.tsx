@@ -10,8 +10,8 @@ export default function MyAccountPage() {
     if (!user) {
         return (
             <div className={styles.container}>
-                <h1>Mi Cuenta</h1>
-                <p>No tienes sesión iniciada. <a href="/login">Inicia sesión</a> para ver tus datos.</p>
+                <h1>My Account</h1>
+                <p>Please<a href="/login">Log in</a> to see your info.</p>
             </div>
         );
     }
