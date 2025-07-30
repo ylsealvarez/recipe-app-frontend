@@ -26,9 +26,9 @@ export default function MyAccountPage() {
                 <p><strong>Phone Number:</strong> {user.phoneNumber}</p>
                 <p><strong>Address:</strong> {user.address}</p>
                 <p><strong>Plan:</strong>{' '}
-                    {user.roles && user.roles.length > 0
-                        ? user.roles
-                        : '— none —'}
+                    {user.roles[0].includes('_')
+                        ? user.roles[0].split('_')[1]
+                        : user.roles[0]}
                 </p>
             </div>
         </div>

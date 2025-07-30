@@ -1,11 +1,30 @@
 "use client";
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useAuth } from 'app/context/AuthContext';
 import { useRouter } from 'next/navigation'
 import { fetcher } from '../../../../lib/fetcher';
 import styles from "./CreateRecipe.module.sass"
 
 export const CreateRecipe = () => {
+    const { user } = useAuth()
     const router = useRouter()
+
+    useEffect(() => {
+        console.log('🚦 CreateRecipe user:', user);
+        if (user && !user.roles.includes('ROLE_PROFESSIONAL')) {
+            router.push('/gopro');
+        }
+    }, [user, router])
+
+    // Mientras esperamos la comprobación, no mostramos el form
+    if (!user){
+        return null;
+    }
+    
+    if (!user.roles.includes('ROLE_PROFESSIONAL')) {
+        return null;
+    }
+
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -26,7 +45,7 @@ export const CreateRecipe = () => {
             steps: data.get('steps'),
             type: data.get('type'),
             diet: data.get('diet'),
-            isPremium:   false
+            isPremium: data.get('isPremium') === 'on'
         }
 
         try {
@@ -53,24 +72,24 @@ export const CreateRecipe = () => {
         <div className={styles.CreateRecipe}  >
             <h1 className={styles.CreateRecipe__title}>Create Recipe</h1>
             <form onSubmit={handleSubmit} className={styles.CreateRecipe__form}>
-                <input type="text" name="name" placeholder="Recipe name" required/>
-                <input type="text" name="prepTime" placeholder="Preparation time" required/>
-                <input type="text" name="cookTime" placeholder="Cooking time" required/>
-                <input type="text" name="totalTime" placeholder="Total time" required/>
-                <input type="text" name="servings" placeholder="Servings" required/>
-                <input type="text" name="ingredients" placeholder="Ingredients" required/>
-                <input type="text" name="steps" placeholder="Steps" required/>
-                <input type="text" name="type" placeholder="Type" required/>
-                <input type="text" name="diet" placeholder="Diet" required/>
-                
+                <label><input type="checkbox" name="isPremium" />Premium</label>
+                <input type="text" name="name" placeholder="Recipe name" required />
+                <input type="text" name="prepTime" placeholder="Preparation time" required />
+                <input type="text" name="cookTime" placeholder="Cooking time" required />
+                <input type="text" name="totalTime" placeholder="Total time" required />
+                <input type="text" name="servings" placeholder="Servings" required />
+                <input type="text" name="ingredients" placeholder="Ingredients" required />
+                <input type="text" name="steps" placeholder="Steps" required />
+                <input type="text" name="type" placeholder="Type" required />
+                <input type="text" name="diet" placeholder="Diet" required />
+
                 {error && <p className={styles.error}>{error}</p>}
 
-                <input type="submit" name="submit" value={loading ? "Creating…" : "Create"} disabled={loading}/>
-                {loading ? 'Creating…' : 'Create'}
+                <input type="submit" name="submit" value={loading ? "Creating…" : "Create"} disabled={loading} />
             </form>
         </div>
     );
-    }
+}
 
 
 /*        "idRecipe": 4,

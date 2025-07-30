@@ -12,8 +12,13 @@ interface Review {
   createdAt: string
 }
 
-export function RecipeReviews({ idRecipe }: { idRecipe: string }) {
-  const { data: reviews = [], error, isLoading } = useSWR<Review[]>(`/api/recipes/${idRecipe}/review`, fetcher)
+interface Props {
+  idRecipe: string
+}
+
+export function RecipeReviews({ idRecipe }: Props) {
+  const { data: reviews = [], error, isLoading } = useSWR<Review[]>(
+    `/api/recipes/${idRecipe}/review`, (url: string) => fetcher(url, { useApi: true }))
 
   const [alias, setAlias] = useState('')
   const [rating, setRating] = useState(0)

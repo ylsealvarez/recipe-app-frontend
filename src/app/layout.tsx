@@ -1,6 +1,5 @@
-'use client'
 import React from 'react';
-import { AuthProvider } from 'app/context/AuthContext';
+import Providers from './providers';
 import { Outfit } from "next/font/google";
 import Header from "app/components/shared/Header/Header";
 import { Sidebar } from "app/components/shared/Sidebar";
@@ -13,20 +12,16 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
     <html lang="en">
       <body className={outfit.className}>
-        <AuthProvider>
+        <Providers>
           <Header />
           <Sidebar />
           <StripeProvider>{children}</StripeProvider>
           <Footer />
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

@@ -10,7 +10,7 @@
     background-clip: text
   &__form
     display: grid
-    grid-template-areas: "a a" "b c" "d e" "f f" "g g" "h i" "j j"
+    grid-template-areas: "a a" "b b" "c d" "e f" "g g" "h h" "i j" "k k"
     column-gap: 1rem
     row-gap: 1.8rem
     & > input[type="text"]
@@ -24,26 +24,28 @@
       &:focus
         outline: none
         border-bottom: 1px solid $main-contrast
-    & > input[name="name"]
+    & > input[name="isPremium"]
       grid-area: a
-    & > input[name="prepTime"]
+    & > input[name="name"]
       grid-area: b
-    & > input[name="cookTime"]
+    & > input[name="prepTime"]
       grid-area: c
-    & > input[name="totalTime"]
+    & > input[name="cookTime"]
       grid-area: d
-    & > input[name="servings"]
+    & > input[name="totalTime"]
       grid-area: e
-    & > input[name="ingredients"]
+    & > input[name="servings"]
       grid-area: f
-    & > input[name="steps"]
+    & > input[name="ingredients"]
       grid-area: g
-    & > input[name="type"]
+    & > input[name="steps"]
       grid-area: h
-    & > input[name="diet"]
+    & > input[name="type"]
       grid-area: i
-    & > input[name="submit"]
+    & > input[name="diet"]
       grid-area: j
+    & > input[name="submit"]
+      grid-area: k
       border: 1px solid $main-contrast
       background: transparent
       color: rgb(203, 73, 33)

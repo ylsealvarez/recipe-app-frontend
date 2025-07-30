@@ -15,7 +15,14 @@ type PageResponse = {
 type Recipe = {
     idRecipe: string
     name: string
-    prepTime?: string
-    type?: string
-    isPremium?: boolean
+    prepTime: string
+    cookTime: string
+    totalTime: string
+    servings: number
+    type: string
+    diet: string
+    rating?: number
+    ingredients: string
+    steps: string
+    isPremium: boolean
 }

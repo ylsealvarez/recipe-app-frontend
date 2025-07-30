@@ -22,7 +22,9 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    console.log('🔐 AuthProvider mounted');
     const [user, setUser] = useState<CurrentUser | null>(null);
+
 
     // Llama al backend con el token
     const fetchUser = async (token: string) => {
@@ -30,7 +32,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('JWT inválido');
-        return (await res.json()) as CurrentUser;
+        const raw = await res.json();
+
+        console.log('🔍 raw.roles from /api/users/me:', raw.roles);
+
+        const roles: string[] = (raw.roles || []).map((r: any) => {
+            if (typeof r === 'string') return r.startsWith('ROLE_') ? r : `ROLE_${r}`;
+            if (r.authority) return r.authority;
+            if (r.role) return `ROLE_${r.role}`;
+            return '';
+        }).filter(Boolean);
+
+        console.log('🔍 normalized roles:', roles);
+
+        // 2) Comprueba el resultado de la normalización
+
+        return {
+            username: raw.username,
+            firstname: raw.firstname,
+            surname: raw.surname,
+            email: raw.email,
+            phoneNumber: raw.phoneNumber,
+            address: raw.address,
+            roles,
+            // …otros campos si los necesitas
+        } as CurrentUser;
     };
 
     // login: guarda token y carga user
@@ -48,6 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Al montar, chequeamos si ya había token
     useEffect(() => {
+        console.log('🔐 AuthProvider running init effect');
         const init = async () => {
             const token = localStorage.getItem('jwt');
             if (token) {
@@ -72,6 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 // Hook de conveniencia
 export const useAuth = () => {
     const ctx = useContext(AuthContext);
+    console.log('🔐 useAuth ->', ctx);
     if (!ctx) throw new Error('useAuth debe usarse dentro de <AuthProvider>');
     return ctx;
 };
