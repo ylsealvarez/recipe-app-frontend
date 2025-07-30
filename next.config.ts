@@ -2,10 +2,26 @@
 
 const path = require('path')
 
-const nextConfig= {
+const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'src/sass')],
-    prependData: `@use "main" as *`,
+    prependData: `@use "variables" as *`,
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/recipes/:path*',
+        destination: 'http://localhost:8080/api/recipes/:path*'
+      },
+      {
+        source: '/api/users/:path*',
+        destination: 'http://localhost:8080/api/users/:path*'
+      },
+      {
+        source: '/api/auth/:path*',
+        destination: 'http://localhost:8080/api/auth/:path*'
+      }
+    ]
   }
 }
 

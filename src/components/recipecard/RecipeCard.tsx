@@ -8,41 +8,37 @@ import { fetcher } from "../../../lib/fetcher";
 
 interface RecipeCardProps {
     recipe: Recipe
-    currentUserId: string
     initialFavorited?: boolean
 }
 
-export const RecipeCard = ({ recipe, currentUserId, initialFavorited = false }: RecipeCardProps) => {
+export const RecipeCard = ({ recipe, initialFavorited = false }: RecipeCardProps) => {
     const [favorited, setFavorited] = useState(initialFavorited)
     const [loading, setLoading] = useState(false);
 
-
     const PREMIUM_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID!;
     useEffect(() => {
-        // podrías hacer un fetch GET /api/recipes/favorites y ver si incluye este id
-        // o recibir un prop “initialFavorited”
     }, [])
 
     const toggleFavorite = async () => {
-        const res = await fetch(
-            `http://localhost:8080/api/recipes/${recipe.idRecipe}/favorite`,
-            {
-                method: 'POST',
-                headers: { 'X-User-Id': currentUserId }
-            }
-        )
-        if (!res.ok) {
-            console.error(`Error ${res.status}`)
-            return
+        setLoading(true)
+        try {
+            // Llamada al backend (useApi=true) sin analizar JSON
+            await fetcher(
+                `/api/recipes/${recipe.idRecipe}/favorite`,
+                { method: 'POST', useApi: true }
+            )
+            setFavorited(f => !f)
+        } catch (err) {
+            console.error('Error favoriting recipe:', err)
+        } finally {
+            setLoading(false)
         }
-        setFavorited(f => !f)
     }
 
     const handleBuy = async () => {
         setLoading(true);
         const { url } = await fetcher('/api/checkout', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ priceId: PREMIUM_PRICE_ID, mode: 'payment', recipeId: recipe.idRecipe, }),
             useApi: false,
         });

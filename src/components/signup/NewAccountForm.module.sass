@@ -10,10 +10,10 @@
     background-clip: text
   &__form
     display: grid
-    grid-template-areas: "a b" "c c" "d d" "e e" "f f" "g g"
+    grid-template-areas: "a b" "c d" "e f" "g h" "i i"
     column-gap: 1rem
     row-gap: 2rem
-    & > input[type="text"], input[type="password"]
+    & > input[type="text"], input[type="password"], input[type="email"], input[type="tel"]
       color: $text-color
       font-weight: 300
       padding: 0.5rem 1rem
@@ -28,16 +28,20 @@
       grid-area: a
     & > input[name="last_name"]
       grid-area: b
-    & > input[name="email"]
+    & > input[name="username"]
       grid-area: c
-    & > input[name="phone"]
+    & > input[name="email"]
       grid-area: d
-    & > input[name="password"]
+    & > input[name="address"]
       grid-area: e
-    & > input[name="password_confirmation"]
+    & > input[name="phone"]
       grid-area: f
-    & > input[name="submit"]
+    & > input[name="password"]
       grid-area: g
+    & > input[name="password_confirmation"]
+      grid-area: h
+    & > input[name="submit"]
+      grid-area: i
       border: 1px solid $main-contrast
       background: transparent
       color: rgb(203, 73, 33)
@@ -47,7 +51,13 @@
       text-transform: uppercase
       cursor: pointer
       border-radius: 1.5rem
-  &__error
-    color: red
-    font-weight: 300
-    margin-top: 1rem
+      &:hover
+        background: rgb(203, 73, 33)
+        color: white
+  &__errors
+    & > p
+      color: rgb(175, 16, 16)
+      font-weight: 700
+      margin-top: 2rem
+      text-align: center
+      text-transform: uppercase

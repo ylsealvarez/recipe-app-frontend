@@ -3,21 +3,25 @@ import useSWR from 'swr'
 import { fetcher } from '../../../lib/fetcher'
 import { RecipeCard } from 'app/components/recipecard/RecipeCard'
 import styles from './page.module.sass'
+import { useAuth } from 'app/context/AuthContext'
 
 export default function MyRecipesPage() {
-    // 1) Usa SWR para obtener favoritos
+    const { user } = useAuth()
+    const shouldFetch = Boolean(user)
+
     const { data: favorites = [], error, isLoading } = useSWR<Recipe[]>(
-        '/api/recipes/favorites',
+        shouldFetch ? '/api/recipes/favorites' : null,
         fetcher
     )
-    
+
     const favoritesIds = favorites.map(r => r.idRecipe)
+    if (!user) return <p className={styles.center}>Please, log in to check your favorite recipes.</p>
     if (isLoading) return <p className={styles.center}>Loading…</p>
     if (error) return <p className={styles.error}>Error loading favorites</p>
     if (favorites.length === 0)
         return <p className={styles.center}>You have no favorite recipes yet.</p>
 
-    // 2) Si hay datos, renderiza RecipeCard para cada receta
+   
     return (
         <main className={styles.MyRecipes}>
             <h2>My Favorite Recipes</h2>
@@ -26,7 +30,6 @@ export default function MyRecipesPage() {
                     <RecipeCard
                         key={recipe.idRecipe}
                         recipe={recipe}
-                        currentUserId="0139811-1"
                         initialFavorited={favoritesIds.includes(recipe.idRecipe)}
                     />
                 ))}
