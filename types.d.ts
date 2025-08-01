@@ -21,8 +21,9 @@ type Recipe = {
     servings: number
     type: string
     diet: string
-    rating?: number
-    ingredients: string
-    steps: string
+    rating: number
+    ingredients: string[]
+    steps: string[]
     isPremium: boolean
+    imagenUrl: string
 }

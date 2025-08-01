@@ -5,6 +5,10 @@ import { useState, useEffect } from 'react'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import styles from './RecipeCard.module.sass'
 import { fetcher } from "../../../lib/fetcher";
+import { LiaStarSolid } from "react-icons/lia";
+import { ImStarEmpty } from "react-icons/im";
+import { FaShoppingCart } from "react-icons/fa";
+
 
 interface RecipeCardProps {
     recipe: Recipe
@@ -45,41 +49,60 @@ export const RecipeCard = ({ recipe, initialFavorited = false }: RecipeCardProps
         window.location.href = url;
     };
 
+    const stars = Array.from({ length: 5 }, (_, i) =>
+        i < recipe.rating ? <LiaStarSolid /> : <ImStarEmpty />
+    );
+
     return (
         <article className={styles.RecipeCard}>
-            {recipe.isPremium && (
-                <div className={styles.premiumActions}>
+            <div className={styles.imageContainer}>
+                <Link href={`/recipes/${recipe.idRecipe}`}>
+                    {recipe.imagenUrl && (
+                        <Image
+                            src={recipe.imagenUrl}
+                            alt={recipe.name}
+                            width={400}
+                            height={150}
+                            style={{ objectFit: 'cover' }}
+                        />
+                    )}
+                </Link>
+                {recipe.isPremium && (
                     <span className={styles.premiumBadge}>Premium</span>
-                    <button
-                        onClick={handleBuy}
-                        disabled={loading}
-                        className={styles.buyButton}
-                    >
-                        {loading ? 'Processing…' : 'Buy Recipe'}
-                    </button>
-                </div>
-            )}
-            <Link href={`/recipes/${recipe.idRecipe}`}>
-                <Image
-                    src="/images/dish.jpg"
-                    alt={recipe.name}
-                    width={400}
-                    height={200}
-                />
-            </Link>
-
+                )}
+            </div>
             <div className={styles.info}>
                 <h3>{recipe.name}</h3>
                 {recipe.type && <h4>{recipe.type}</h4>}
             </div>
 
-            <button
-                onClick={toggleFavorite}
-                aria-label={favorited ? 'Unfavorite' : 'Favorite'}
-                className={styles.favoriteButton}
-            >
-                {favorited ? <FaHeart /> : <FaRegHeart />}
-            </button>
+            <div className={styles.actions}>
+                <div className={styles.rating}>
+                    {stars.map((s, idx) => (
+                        <span key={idx} className={styles.star}>
+                            {s}
+                        </span>
+                    ))}
+                </div>
+                <button
+                    onClick={toggleFavorite}
+                    aria-label={favorited ? 'Unfavorite' : 'Favorite'}
+                    className={styles.favoriteButton}
+                >
+                    {favorited ? <FaHeart /> : <FaRegHeart />}
+                </button>
+
+                {recipe.isPremium && (
+                    <button
+                        onClick={handleBuy}
+                        disabled={loading}
+                        aria-label="Buy recipe"
+                        className={styles.buyButton} data-tooltip="BUY">
+                        <FaShoppingCart />
+                    </button>
+                )}
+            </div>
+
         </article>
     )
 }

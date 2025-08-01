@@ -7,23 +7,18 @@ type RecipeListProps = {
     page?: number
     totalPages?: number
     onPageChange?: (newPage: number) => void
-    currentUserId: string
     favoritesIds?: string[]
 }
 
-const currentUserId = '0139811-1'
-
-export const RecipeList = ({ recipes, page = 0, totalPages = 0, onPageChange = () => { }, currentUserId, favoritesIds = []}: RecipeListProps) => {
+export const RecipeList = ({ recipes, page = 0, totalPages = 0, onPageChange = () => { }, favoritesIds = []}: RecipeListProps) => {
 
     return (
         <section className={styles.Recipe}>
-            <h3>Recipes</h3>
             <div className={styles.Recipe__grid}>
                 {recipes.map(r => (
                     <RecipeCard
                         key={r.idRecipe}
                         recipe={r}
-                        currentUserId={currentUserId}
                         initialFavorited={favoritesIds.includes(r.idRecipe)}
                     />
                 ))}

@@ -1,0 +1,45 @@
+.Testimonials
+  padding: 4rem 2rem
+  background: $color-primary
+  max-width: 1000px
+  margin: 0 auto
+
+  &__title
+    text-align: center
+    font-size: 2.5rem
+    margin-bottom: 2rem
+    color: $gradient
+
+  &__grid
+    display: grid
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
+    gap: 4.5rem
+    justify-items: center
+
+  &__card
+    background: #fff
+    border: 1px solid $border-color
+    border-radius: 0.75rem
+    padding: 1.5rem
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1)
+    width: 100%
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+
+  &__alias
+    font-weight: bold
+    margin-bottom: 0.5rem
+    color: $text-color
+
+  &__stars
+    margin-bottom: 1rem
+    color: #FFD700
+    display: flex
+    & > svg
+      margin-right: 0.25rem
+
+  &__comment
+    font-size: 0.9rem
+    color: $border-color
+    flex-grow: 1

@@ -1,7 +1,10 @@
-export default function RecipeLayout({ children }: { children: React.ReactNode}) {
+import React from 'react';
+
+
+export default function RecipeLayout({ children }: { children: React.ReactNode }) {
     return (
-        <main>
+        <div>
             {children}
-        </main>
-    )
+        </div>
+    );
 }

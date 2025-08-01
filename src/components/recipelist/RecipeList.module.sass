@@ -2,20 +2,17 @@
   display: flex
   flex-direction: column
   align-items: center
-  & > h3
-    text-align: center
-    font-size: 3rem
-    margin-bottom: 2rem
   &__grid
     display: grid
     width: 80%
     gap: 2rem
     max-width: 1200px
-    margin: 0 auto
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
+    margin: 3rem auto
+    grid-template-columns: repeat(4, 1fr)
     & > article
       display: flex
       flex-direction: column
+      margin-bottom: 1rem
       overflow: hidden
       border-radius: 1rem
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.1)

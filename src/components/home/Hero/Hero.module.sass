@@ -1,23 +1,71 @@
 .Hero
-  & > h1
-    background-clip: text
-    -webkit-text-fill-color: transparent
-    font-size: 7rem
-    margin: 3rem 0
-    margin-bottom: 1rem
-    letter-spacing: 0.05em
+  position: relative
+  width: 100%
+  height: 80vh
+  overflow: hidden
+  &__overlay
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
     text-align: center
-  & > h2
-    font-size: 2rem
-    margin: 0 0 3rem 0
-    text-align: center
-    color: $color-secondary
+    z-index: 2
+    padding: 0 1rem
+    h1
+      font-size: 4rem
+      margin-bottom: 1rem
+      line-height: 1.1
+      background: $gradient
+      -webkit-background-clip: text
+      -webkit-text-fill-color: transparent
+      letter-spacing: 0.05em
+    h2
+      font-size: 1.8rem
+      margin-bottom: 2rem
+      color: $color-secondary
+    &__button
+      display: inline-block
+      background: $gradient
+      color: #fff
+      border: none
+      padding: 0.75rem 1.5rem
+      font-size: 1rem
+      text-transform: uppercase
+      letter-spacing: 0.05em
+      border-radius: 0.5rem
+      cursor: pointer
+      transition: background 0.3s ease
+      &:hover
+        background: $main-contrast
   &__imageContainer
-    position: relative
+    position: absolute
     width: 100vw
-    height: 80vh
+    height: 100%
     overflow: hidden
+    &::before
+      content: ""
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background: rgba(0, 0, 0, 0.4)
+      z-index: 1
     & > img
       object-fit: cover
       border-radius: 1rem
       box-shadow: 0 0 4rem rgba(255, 255, 255, 0.2)
+      position: relative
+      z-index: 0
+
+.Hero--noOverlay .Hero__imageContainer::before
+  background: transparent !important
+
+.Hero--rightAlign .Hero__overlay
+  width: 50%
+  top: 50%
+  left: auto
+  right: 2rem
+  transform: translate(0, -50%)
+  text-align: center
+  

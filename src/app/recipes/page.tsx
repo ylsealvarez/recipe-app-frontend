@@ -1,17 +1,17 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { SearchBar } from 'app/components/shared/SearchBar/SearchBar'
-import { RecipeList } from 'app/components/recipelist/RecipeList'
-import styles from './page.module.sass'
-import useSWR from 'swr'
-import { fetcher } from '../../../lib/fetcher'
+import { Hero } from "app/components/home/Hero/Hero";
+import { SearchBar } from "app/components/shared/SearchBar/SearchBar";
+import { RecipeList } from "app/components/recipelist/RecipeList";
+import styles from 'app/components/home/Hero/Hero.module.sass'
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/fetcher";
+import Link from "next/link";
 
 export default function RecipesPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
-
-    const currentUserId = '0139811-1';
 
     const { data: favorites = [] } = useSWR<Recipe[]>('/api/recipes/favorites', fetcher)
     const favoritesIds = favorites.map(r => r.idRecipe)
@@ -22,7 +22,7 @@ export default function RecipesPage() {
     const [ingredient, setIngredient] = useState(initialIngredient)
     const [recipes, setRecipes] = useState<Recipe[]>([])
     const [page, setPage] = useState(initialPage)
-    const [elements] = useState(9)
+    const [elements] = useState(12)
     const [totalPages, setTotal] = useState(0)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -81,25 +81,39 @@ export default function RecipesPage() {
     }
 
     return (
-        <main className={styles.RecipesPage}>
-            <SearchBar
-                ingredient={ingredient}
-                onIngredientChange={setIngredient}
-                onSearch={onSearch}
-            />
+        <>
+            <div className={styles.searchStrip}>
+                <SearchBar
+                    ingredient={ingredient}
+                    onIngredientChange={setIngredient}
+                    onSearch={onSearch} />
+            </div>
+            <Hero
+                backgroundImage="/images/hero2.webp"
+                title={"Check out +200 exclusive recipes"}
+                className={`${styles['Hero--noOverlay']} ${styles['Hero--rightAlign']}`}
+            >
+                <Link href="/recipes" passHref>
+                    <button className={styles.Hero__overlay__button}>
+                        Explore Premium
+                    </button>
+                </Link>
+            </Hero >
 
-            {error && <div className={styles.error}>Error: {error}</div>}
-            {loading ? (
-                <p>Loading…</p>
-            ) : recipes.length === 0 ? (
-                <p>Your search did not return any results.</p>
-            ) : (
-                <RecipeList
-                    recipes={recipes}
-                    page={ingredient.trim() ? undefined : page}
-                    totalPages={ingredient.trim() ? undefined : totalPages}
-                    onPageChange={newPage => setPage(newPage)} currentUserId={currentUserId} favoritesIds={favoritesIds} />
-            )}
-        </main>
+            <main className={styles.RecipesPage}>
+                {error && <div className={styles.error}>Error: {error}</div>}
+                {loading ? (
+                    <p>Loading…</p>
+                ) : (
+                    <RecipeList
+                        recipes={recipes}
+                        page={ingredient.trim() ? undefined : page}
+                        totalPages={ingredient.trim() ? undefined : totalPages}
+                        onPageChange={setPage}
+                        favoritesIds={favoritesIds}
+                    />
+                )}
+            </main>
+        </>
     )
 }

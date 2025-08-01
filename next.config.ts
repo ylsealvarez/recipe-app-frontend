@@ -7,6 +7,15 @@ const nextConfig = {
     includePaths: [path.join(__dirname, 'src/sass')],
     prependData: `@use "variables" as *`,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.allrecipes.com',
+        pathname: '/**',
+      },
+    ],
+  },
   async rewrites() {
     return [
       {
