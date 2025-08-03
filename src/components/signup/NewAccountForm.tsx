@@ -34,18 +34,19 @@ export const NewAccountForm = () => {
             });
 
             if (res.ok) {
-                // Registro OK → redirige al login
+
                 router.push("/login");
             } else if (res.status === 400) {
                 const { message } = await res.json();
                 setErrors([message]);
             } else {
-                // Otros errores
+
                 const text = await res.text();
                 setErrors([`Error ${res.status}: ${text}`]);
             }
-        } catch (e: any) {
-            setErrors([e.message || "Error de red"]);
+        } catch (e: unknown) {
+            const msg = e instanceof Error ? e.message : String(e);
+            setErrors([msg || "Error de red"]);
         } finally {
             setLoading(false);
         }

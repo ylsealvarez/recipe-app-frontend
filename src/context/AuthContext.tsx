@@ -31,17 +31,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const res = await fetch('http://localhost:8080/api/users/me', {
             headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) throw new Error('JWT inválido');
+        if (!res.ok) throw new Error('JWT invalid');
         const raw = await res.json();
 
         console.log('🔍 raw.roles from /api/users/me:', raw.roles);
 
-        const roles: string[] = (raw.roles || []).map((r: any) => {
-            if (typeof r === 'string') return r.startsWith('ROLE_') ? r : `ROLE_${r}`;
-            if (r.authority) return r.authority;
-            if (r.role) return `ROLE_${r.role}`;
-            return '';
-        }).filter(Boolean);
+        const rawRoles = Array.isArray(raw.roles) ? raw.roles : [];
+        const roles: string[] = rawRoles
+            .map((r: unknown) => {
+                if (typeof r === 'string') {
+                    return r.startsWith('ROLE_') ? r : `ROLE_${r}`;
+                }
+                if (r && typeof r === 'object' && 'authority' in r) {
+                    return (r as { authority: string }).authority;
+                }
+                if (r && typeof r === 'object' && 'role' in r) {
+                    return `ROLE_${(r as { role: string }).role}`;
+                }
+                return '';
+            })
+            .filter(Boolean);
+
 
         console.log('🔍 normalized roles:', roles);
 

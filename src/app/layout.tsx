@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { Suspense } from 'react';
 import Providers from './providers';
 import { Outfit } from "next/font/google";
 import Header from "app/components/shared/Header/Header";
@@ -19,7 +20,9 @@ export default function RootLayout({ children }: Readonly<{children: React.React
         <Providers>
           <Header />
           <Sidebar />
-          <StripeProvider>{children}</StripeProvider>
+          <Suspense fallback={null}>
+            <StripeProvider>{children}</StripeProvider>
+          </Suspense>
           <Footer />
         </Providers>
       </body>

@@ -42,10 +42,10 @@ export const DeleteRecipe = () => {
                 useApi: true
             });
             router.push('/recipes');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
-            setError(err.message || 'Error borrando la receta');
-            setLoading(false);
+            const msg = err instanceof Error ? err.message : String(err);
+            setError(msg || 'Error deleting the recipe');
         }
     };
 

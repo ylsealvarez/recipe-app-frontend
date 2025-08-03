@@ -26,7 +26,7 @@ export const LoginForm = () => {
                 },
                 body: JSON.stringify(payload),
             });
-            
+
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const token = res.headers.get("Authorization");
             if (!token) throw new Error("No se recibió token");
@@ -34,10 +34,12 @@ export const LoginForm = () => {
             router.push("/");
             // por ejemplo con router.push("/dashboard")
             console.log("Login OK, token:", token);
-        } catch (e: any) {
+        } catch (e: unknown) {
             console.error(e);
-            setError("Login fallido: " + (e.message || e.toString()));
+            const msg = e instanceof Error ? e.message : String(e);
+            setError(msg);
         }
+        
     };
 
     return (

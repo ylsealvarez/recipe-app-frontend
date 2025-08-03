@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import useSWR, { mutate } from 'swr'
+import useSWR from 'swr'
 import { fetcher } from '../../../../lib/fetcher'
 import styles from './RecipeReviews.module.sass'
 
@@ -17,26 +17,41 @@ interface Props {
 }
 
 export function RecipeReviews({ idRecipe }: Props) {
-  const { data: reviews = [], error, isLoading } = useSWR<Review[]>(
-    `/api/recipes/${idRecipe}/review`, (url: string) => fetcher(url, { useApi: true }))
+  // Wrapper para SWR: asegura Promise<Review[]>
+  const fetchReviews = async (url: string): Promise<Review[]> => {
+    const data = await fetcher<Review[]>(url, { useApi: true });
+    return data ?? [];
+  };
+
+  const {
+    data: reviews = [],
+  } = useSWR<Review[]>(
+    `/api/recipes/${idRecipe}/review`,
+    fetchReviews
+  );
 
   const [alias, setAlias] = useState('')
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
 
-  const submitReview = async () => {
-    await fetcher(`/api/recipes/${idRecipe}/review`, {
-      method: 'POST',
-      useApi: true,
-      body: JSON.stringify({ authorAlias: alias, rating, comment })
-    })
-    // revalida SWR
-    mutate(`/api/recipes/${idRecipe}/review`)
-    setAlias(''); setRating(0); setComment('')
-  }
-
-  if (isLoading) return <p>Loading reviews…</p>
-  if (error) return <p>Error loading reviews</p>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await fetcher(`/api/recipes/${idRecipe}/review`, {
+        method: 'POST',
+        useApi: true,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alias, rating, comment }),
+      });
+      setAlias('');
+      setRating(0);
+      setComment('');
+      // Refrescar listado
+      await fetchReviews(`/api/recipes/${idRecipe}/review`);
+    } catch (err: unknown) {
+      console.error(err);
+    }
+  };
 
   return (
     <section className={styles.reviews}>
@@ -63,7 +78,7 @@ export function RecipeReviews({ idRecipe }: Props) {
             value={comment}
             onChange={e => setComment(e.target.value)}
           />
-          <button onClick={submitReview}>Send Review</button>
+          <button onClick={handleSubmit}>Send Review</button>
         </div>
       </div>
       <div className={styles.review}>

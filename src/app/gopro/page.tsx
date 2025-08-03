@@ -1,5 +1,14 @@
 import { PlanCard } from "app/components/PlanCard/PlanCard";
 import styles from "./PlansPage.module.sass"
+import { Metadata } from "next"
+
+export const runtime = "edge"
+
+export const metadata: Metadata = {
+  title: "✨ BiaChef | Plans",
+  description: "Welcome to the best recipe app, learn how to cook delicious food",
+  keywords: ["recipes", "health", "diet","food"],
+}
 
 const plans = [
   {

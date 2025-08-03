@@ -9,10 +9,18 @@ export default function MyRecipesPage() {
     const { user } = useAuth()
     const shouldFetch = Boolean(user)
 
+    const fetchFavorites: (url: string) => Promise<Recipe[]> = async (url) => {
+        const data = await fetcher<Recipe[]>(url, { useApi: true });
+        if (data === null) {     
+            return [];
+        }
+        return data;
+    };
+
     const { data: favorites = [], error, isLoading } = useSWR<Recipe[]>(
         shouldFetch ? '/api/recipes/favorites' : null,
-        fetcher
-    )
+        fetchFavorites
+    );
 
     const favoritesIds = favorites.map(r => r.idRecipe)
     if (!user) return <p className={styles.center}>Please, log in to check your favorite recipes.</p>
@@ -21,7 +29,7 @@ export default function MyRecipesPage() {
     if (favorites.length === 0)
         return <p className={styles.center}>You have no favorite recipes yet.</p>
 
-   
+
     return (
         <main className={styles.MyRecipes}>
             <h2>My Favorite Recipes</h2>

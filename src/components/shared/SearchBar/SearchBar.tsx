@@ -14,7 +14,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ ingredient, onIngredientCh
     <form className={styles.SearchBar} onSubmit={onSearch}>
       <input
         type="text"
-        placeholder="Search…"
+        placeholder="What would you like to cook..."
         value={ingredient}
         onChange={e => onIngredientChange(e.target.value)}
         className={styles.input}

@@ -1,70 +1,89 @@
-'use client'
-import { useParams, useRouter } from 'next/navigation'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import { RecipeReviews } from './RecipeReviews'
-import { fetcher } from '../../../../lib/fetcher'
-import styles from './page.module.sass'
+'use client';
+import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { RecipeReviews } from './RecipeReviews';
+import { fetcher } from '../../../../lib/fetcher';
+import styles from './page.module.sass';
 
 export default function RecipePageClient() {
-    const params = useParams()
-    const router = useRouter()
+    const params = useParams();
+    const router = useRouter();
 
-    if (!params.id || Array.isArray(params.id)) {
-        return <p>ID de receta inválido.</p>
-    }
-    const id: string = params.id
+    // Extraemos id sin bloquear los hooks
+    const rawId = params.id;
+    const id = typeof rawId === 'string' ? rawId : undefined;
 
-    const [recipe, setRecipe] = useState<Recipe | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<'NOT_FOUND' | 'PREMIUM_ONLY' | null>(null)
+    // Hooks siempre en el mismo orden
+    const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<'NOT_FOUND' | 'PREMIUM_ONLY' | null>(null);
 
     useEffect(() => {
+        if (!id) return; // si no hay id, no hacemos fetch
+
         (async () => {
             try {
-                const data = await fetcher(`/api/recipes/${id}`, {
-                    useApi: true
-                })
+                type RawRecipe = Omit<Recipe, 'ingredients' | 'steps'> & {
+                    ingredients: string;
+                    steps: string;
+                };
+
+                const data = await fetcher<RawRecipe>(`/api/recipes/${id}`, {
+                    useApi: true,
+                });
+                if (!data) {
+                    throw new Error('Fetch error 404: Not Found');
+                }
+
                 const ingredientsArray = data.ingredients
-                    .split(',')            // separa por coma
-                    .map((s: string) => s.trim())  // quita espacios
-                    .filter((s: string) => s.length) // descarta strings vacíos
-
+                    .split(',')
+                    .map(s => s.trim())
+                    .filter(s => s);
                 const stepsArray = data.steps
-                    .split('.')            // separa por punto
-                    .map((s: string) => s.trim())  // quita espacios
-                    .filter((s: string) => s.length) // descarta strings vacíos
+                    .split('.')
+                    .map(s => s.trim())
+                    .filter(s => s);
 
-                setRecipe({
+                const recipeObj: Recipe = {
                     ...data,
                     ingredients: ingredientsArray,
                     steps: stepsArray,
-                })
-            } catch (e: any) {
-                const msg = e.message || ''
-                if (msg.startsWith('Fetch error 403')) {
-                    setError('PREMIUM_ONLY')
-                } else if (msg.startsWith('Fetch error 404')) {
-                    setError('NOT_FOUND')
+                };
+                setRecipe(recipeObj);
+            } catch (err: unknown) {
+                const msg = err instanceof Error ? err.message : String(err);
+                if (msg.includes('403')) {
+                    setError('PREMIUM_ONLY');
+                } else if (msg.includes('404')) {
+                    setError('NOT_FOUND');
                 } else {
-                    console.error(e)
+                    console.error(err);
                 }
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        })()
-    }, [id])
+        })();
+    }, [id]);
 
     useEffect(() => {
         if (error === 'PREMIUM_ONLY') {
-            router.push('/gopro')
+            router.push('/gopro');
         }
-    }, [error, router])
+    }, [error, router]);
 
-    if (loading) return <p>Cargando receta…</p>
-    if (error === 'NOT_FOUND') return <p>Receta no encontrada.</p>
+    // Renderizado condicional tras invocar hooks
+    if (!id) {
+        return <p>ID de receta inválido.</p>;
+    }
+    if (loading) {
+        return <p>Cargando receta…</p>;
+    }
+    if (error === 'NOT_FOUND') {
+        return <p>Receta no encontrada.</p>;
+    }
     if (error === 'PREMIUM_ONLY') {
-        return <p>Redirecting to subscription page...</p>
+        return <p>Redirecting to subscription page...</p>;
     }
 
     return (
@@ -107,5 +126,5 @@ export default function RecipePageClient() {
             </div>
             <RecipeReviews idRecipe={id} />
         </main>
-    )
+    );
 }

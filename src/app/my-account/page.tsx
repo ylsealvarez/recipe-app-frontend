@@ -6,7 +6,6 @@ import { useAuth } from 'app/context/AuthContext';
 export default function MyAccountPage() {
     const { user } = useAuth();
 
-    // Si no hay user (por si alguien entra sin loguear)
     if (!user) {
         return (
             <div className={styles.container}>

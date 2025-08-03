@@ -11,8 +11,8 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
       <ScrollToTop />
       <Hero
         backgroundImage="/images/hero1.webp"
-        title="Learn to cook"
-        subtitle="The best recipes are here"
+        title="Be a Chef and master the art of cooking"
+        subtitle="Find the best recipes here"
       >
         <Link href="/recipes" passHref>
           <button className={styles.Hero__overlay__button}>

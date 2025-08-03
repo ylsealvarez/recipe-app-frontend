@@ -1,40 +1,35 @@
-"use client";
-import { useEffect, useState } from 'react'
+'use client';
+import { useEffect, useState } from 'react';
 import { useAuth } from 'app/context/AuthContext';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { fetcher } from '../../../../lib/fetcher';
-import styles from "./CreateRecipe.module.sass"
+import styles from './CreateRecipe.module.sass';
 
 export const CreateRecipe = () => {
-    const { user } = useAuth()
-    const router = useRouter()
+    // hooks siempre al inicio
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const { user } = useAuth();
+    const router = useRouter();
 
     useEffect(() => {
-        console.log('🚦 CreateRecipe user:', user);
         if (user && !user.roles.includes('ROLE_PROFESSIONAL')) {
             router.push('/gopro');
         }
-    }, [user, router])
+    }, [user, router]);
 
-    // Mientras esperamos la comprobación, no mostramos el form
-    if (!user){
+    if (!user || !user.roles.includes('ROLE_PROFESSIONAL')) {
         return null;
     }
-    
-    if (!user.roles.includes('ROLE_PROFESSIONAL')) {
-        return null;
-    }
-
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        setError(null)
-        setLoading(true)
+        event.preventDefault();
+        setError(null);
+        setLoading(true);
 
-        const form = event.currentTarget
-        const data = new FormData(form)
+        const form = event.currentTarget;
+        const data = new FormData(form);
         const payload = {
             name: data.get('name'),
             prepTime: data.get('prepTime'),
@@ -45,39 +40,40 @@ export const CreateRecipe = () => {
             steps: data.get('steps'),
             type: data.get('type'),
             diet: data.get('diet'),
-            isPremium: data.get('isPremium') === 'on'
-        }
+            isPremium: data.get('isPremium') === 'on',
+        };
 
         try {
-            // 2) POST a Spring Boot
-            const created: {
-                idRecipe: number
-                // ...otros campos si los usas
-            } = await fetcher('/api/recipes', {
+            const result = await fetcher<{ idRecipe: number }>('/api/recipes', {
                 method: 'POST',
                 useApi: true,
-                body: JSON.stringify(payload)
-            })
-
-            // 3) Redirijo a la nueva receta
-            router.push(`/recipes/${created.idRecipe}`)
-        } catch (err: any) {
-            console.error(err)
-            setError(err.message || 'Error creando la receta')
-            setLoading(false)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            if (!result) {
+                throw new Error('No se pudo crear la receta');
+            }
+            router.push(`/recipes/${result.idRecipe}`);
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : String(err);
+            setError(msg);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     return (
-        <div className={styles.CreateRecipe}  >
+        <div className={styles.CreateRecipe}>
             <h1 className={styles.CreateRecipe__title}>Create Recipe</h1>
             <form onSubmit={handleSubmit} className={styles.CreateRecipe__form}>
-                <label><input type="checkbox" name="isPremium" />Premium</label>
+                <label>
+                    <input type="checkbox" name="isPremium" /> Premium
+                </label>
                 <input type="text" name="name" placeholder="Recipe name" required />
                 <input type="text" name="prepTime" placeholder="Preparation time" required />
                 <input type="text" name="cookTime" placeholder="Cooking time" required />
                 <input type="text" name="totalTime" placeholder="Total time" required />
-                <input type="text" name="servings" placeholder="Servings" required />
+                <input type="number" name="servings" placeholder="Servings" required />
                 <input type="text" name="ingredients" placeholder="Ingredients" required />
                 <input type="text" name="steps" placeholder="Steps" required />
                 <input type="text" name="type" placeholder="Type" required />
@@ -85,11 +81,16 @@ export const CreateRecipe = () => {
 
                 {error && <p className={styles.error}>{error}</p>}
 
-                <input type="submit" name="submit" value={loading ? "Creating…" : "Create"} disabled={loading} />
+                <input
+                    type="submit"
+                    name="submit"
+                    value={loading ? 'Creating…' : 'Create'}
+                    disabled={loading}
+                />
             </form>
         </div>
     );
-}
+};
 
 
 /*        "idRecipe": 4,

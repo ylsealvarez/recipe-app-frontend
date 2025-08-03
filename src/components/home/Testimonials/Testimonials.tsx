@@ -4,18 +4,17 @@ import React from 'react'
 
 const testimonialsData = [
     {
-        alias: 'FoodLover99',
-        comment: 'These recipes helped me cook like a pro! 🍳'
+        alias: 'FoodLover',
+        comment: 'These recipes helped me cook like a pro! I cooked some of these for my last birthday and my guests loved them🍳'
     },
     {
         alias: 'ChefInMaking',
-        comment: 'I learned to master pasta dishes thanks to this site.'
+        comment: 'I always wanted to learn how to cook delicious desserts and I made it with this site.'
     },
     {
         alias: 'BakingQueen',
-        comment: 'Now my cakes are a hit at every party! 🎂'
+        comment: 'My kids love cakes, so they ask me to cook one everyday and here I have so many options! 🎂'
     },
-    // …añade los que quieras
 ]
 
 export const Testimonials = () => (

@@ -1,9 +1,9 @@
 type FetcherOpts = RequestInit & { useApi?: boolean };
 
-export const fetcher = async <T = any>(
+export const fetcher = async <T = unknown>(
   url: string,
   opts: FetcherOpts = {}
-): Promise<T> => {
+): Promise<T | null> => {
 
   const { useApi = false, headers: userHeaders, ...fetchOpts } = opts;
 
@@ -36,12 +36,13 @@ export const fetcher = async <T = any>(
   // Read raw text
   const text = await res.text();
   // If no content (empty string), return null
-  if (!text) return null as any;
+  if (!text) return null;
 
   // Parse JSON if text is non-empty
   try {
     return JSON.parse(text) as T;
-  } catch (e) {
-    throw new Error(`Failed to parse JSON: ${e}`);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    throw new Error(`Failed to parse JSON: ${message}`);
   }
 };

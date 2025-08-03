@@ -1,56 +1,77 @@
-'use client'
-import Link from 'next/link'
-import Image from 'next/image'
-import { useState, useEffect } from 'react'
-import { FaHeart, FaRegHeart } from 'react-icons/fa'
-import styles from './RecipeCard.module.sass'
-import { fetcher } from "../../../lib/fetcher";
-import { LiaStarSolid } from "react-icons/lia";
-import { ImStarEmpty } from "react-icons/im";
-import { FaShoppingCart } from "react-icons/fa";
+'use client';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useAuth } from 'app/context/AuthContext';
+import { useState } from 'react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import styles from './RecipeCard.module.sass';
+import { fetcher } from '../../../lib/fetcher';
+import { LiaStarSolid } from 'react-icons/lia';
+import { ImStarEmpty } from 'react-icons/im';
+import { FaShoppingCart } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
 
 
 interface RecipeCardProps {
-    recipe: Recipe
-    initialFavorited?: boolean
+    recipe: Recipe;
+    initialFavorited?: boolean;
 }
 
 export const RecipeCard = ({ recipe, initialFavorited = false }: RecipeCardProps) => {
-    const [favorited, setFavorited] = useState(initialFavorited)
+    const { user } = useAuth();
+    const isAuthenticated = user !== null;
+    const [favorited, setFavorited] = useState(initialFavorited);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     const PREMIUM_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID!;
-    useEffect(() => {
-    }, [])
 
     const toggleFavorite = async () => {
-        setLoading(true)
-        try {
-            // Llamada al backend (useApi=true) sin analizar JSON
-            await fetcher(
-                `/api/recipes/${recipe.idRecipe}/favorite`,
-                { method: 'POST', useApi: true }
-            )
-            setFavorited(f => !f)
-        } catch (err) {
-            console.error('Error favoriting recipe:', err)
-        } finally {
-            setLoading(false)
+        if (!isAuthenticated) {
+            router.push('/login');
+            return;
         }
-    }
+
+        setLoading(true);
+        try {
+            await fetcher(`/api/recipes/${recipe.idRecipe}/favorite`, {
+                method: 'POST',
+                useApi: true,
+            });
+            setFavorited(f => !f);
+        } catch (err) {
+            console.error('Error favoriting recipe:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleBuy = async () => {
         setLoading(true);
-        const { url } = await fetcher('/api/checkout', {
-            method: 'POST',
-            body: JSON.stringify({ priceId: PREMIUM_PRICE_ID, mode: 'payment', recipeId: recipe.idRecipe, }),
-            useApi: false,
-        });
-        window.location.href = url;
+        try {
+            // Tipar la respuesta como objeto con url
+            const result = await fetcher<{ url: string }>('/api/checkout', {
+                method: 'POST',
+                body: JSON.stringify({
+                    priceId: PREMIUM_PRICE_ID,
+                    mode: 'payment',
+                    recipeId: recipe.idRecipe,
+                }),
+                useApi: false,
+            });
+            if (!result || !result.url) {
+                throw new Error('No checkout URL returned');
+            }
+            window.location.href = result.url;
+        } catch (err) {
+            console.error('Error initiating purchase:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const stars = Array.from({ length: 5 }, (_, i) =>
-        i < recipe.rating ? <LiaStarSolid /> : <ImStarEmpty />
+        i < recipe.rating ? <LiaStarSolid key={i} /> : <ImStarEmpty key={i} />
     );
 
     return (
@@ -77,17 +98,12 @@ export const RecipeCard = ({ recipe, initialFavorited = false }: RecipeCardProps
             </div>
 
             <div className={styles.actions}>
-                <div className={styles.rating}>
-                    {stars.map((s, idx) => (
-                        <span key={idx} className={styles.star}>
-                            {s}
-                        </span>
-                    ))}
-                </div>
+                <div className={styles.rating}>{stars}</div>
                 <button
                     onClick={toggleFavorite}
                     aria-label={favorited ? 'Unfavorite' : 'Favorite'}
                     className={styles.favoriteButton}
+                    disabled={loading}
                 >
                     {favorited ? <FaHeart /> : <FaRegHeart />}
                 </button>
@@ -97,12 +113,13 @@ export const RecipeCard = ({ recipe, initialFavorited = false }: RecipeCardProps
                         onClick={handleBuy}
                         disabled={loading}
                         aria-label="Buy recipe"
-                        className={styles.buyButton} data-tooltip="BUY">
+                        className={styles.buyButton}
+                        data-tooltip="BUY"
+                    >
                         <FaShoppingCart />
                     </button>
                 )}
             </div>
-
         </article>
-    )
+    );
 }

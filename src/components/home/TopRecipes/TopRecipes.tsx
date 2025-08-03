@@ -12,14 +12,17 @@ import { Navigation, Pagination, Autoplay, Keyboard } from 'swiper/modules';
 import { fetcher } from '../../../../lib/fetcher';
 import styles from "./TopRecipes.module.sass"
 
-const apiFetcher = (url: string) => fetcher<Recipe[]>(url, { useApi: true })
-
 export const TopRecipes = () => {
-    // ② Sólo pasamos la URL, y SWR infiere data como Recipe[]
-    const { data: recipes, error } = useSWR<Recipe[], Error>(
+    const fetchTopRecipes = async (url: string): Promise<Recipe[]> => {
+        const data = await fetcher<Recipe[]>(url, { useApi: true });
+        return data ?? [];
+    };
+
+    // 2. Lo pasamos a useSWR
+    const { data: recipes = [], error } = useSWR<Recipe[], Error>(
         '/api/recipes/top',
-        apiFetcher
-    )
+        fetchTopRecipes
+    );
     if (error) return <div>Error loading recipes.</div>;
     if (!recipes) return <div>Loading...</div>;
 

@@ -1,35 +1,41 @@
-'use client'
-import styles from './PlanCard.module.sass'
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { fetcher } from "../../../lib/fetcher";
+'use client';
+import styles from './PlanCard.module.sass';
+import { useState } from 'react';
+import { fetcher } from '../../../lib/fetcher';
 
 interface PlanCardProps {
-    plan: PlansType
+    plan: PlansType;
 }
 
 export const PlanCard = ({ plan }: PlanCardProps) => {
-
     const [loading, setLoading] = useState(false);
-    const router = useRouter();
 
     const handleSubscribe = async () => {
-
         if (!plan.priceId) {
-            // lógica para el plan gratuito (p.ej. simplemente habilitar la cuenta)
-            return alert('Te has suscrito al plan gratuito 🎉');
+            return alert('You have subscribed to the free plan🎉');
         }
-        console.log('handleSubscribe dispatching…');
+
         setLoading(true);
-        const { url } = await fetcher('/api/checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ priceId: plan.priceId, mode: 'subscription' }),
-            useApi: false
-        });
-        console.log(url);
-        // Redirige al Checkout hosted page
-        window.location.href = url;
+        try {
+            // Especificar el tipo de respuesta esperado
+            const result = await fetcher<{ url: string }>('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ priceId: plan.priceId, mode: 'subscription' }),
+                useApi: false,
+            });
+
+            if (!result || !result.url) {
+                throw new Error('No checkout URL returned');
+            }
+
+            window.location.href = result.url;
+        } catch (err) {
+            console.error(err);
+            
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -41,5 +47,5 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
                 {loading ? 'Processing…' : 'Choose this plan'}
             </button>
         </div>
-    )
-}
+    );
+};
