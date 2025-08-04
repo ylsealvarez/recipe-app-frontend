@@ -9,6 +9,7 @@
     "lint": "next lint",
     "analyze": "cross-env ANALYZE=true next build"
   },
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "@next/bundle-analyzer": "^15.4.5",
     "@stripe/react-stripe-js": "^3.8.0",
