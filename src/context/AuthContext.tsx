@@ -1,6 +1,6 @@
 'use client';
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { fetcher } from '../../lib/fetcher';
 
 export interface CurrentUser {
     username: string;
@@ -10,7 +10,6 @@ export interface CurrentUser {
     phoneNumber: string;
     address: string;
     roles: string[];
-    // …otros campos
 }
 
 interface AuthContextType {
@@ -26,13 +25,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<CurrentUser | null>(null);
 
 
-    // Llama al backend con el token
-    const fetchUser = async (token: string) => {
-        const res = await fetch('http://localhost:8080/api/users/me', {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error('JWT invalid');
-        const raw = await res.json();
+    const fetchUser = async (): Promise<CurrentUser> => {
+        
+        const raw = await fetcher<{
+            username: string
+            firstname: string
+            surname: string
+            email: string
+            phoneNumber: string
+            address: string
+            roles: unknown[]
+        }>('/api/users/me', {
+            method: 'GET',
+            useApi: true,
+        })
+
+
+        if (!raw) throw new Error('No user data');
 
         console.log('🔍 raw.roles from /api/users/me:', raw.roles);
 
@@ -55,7 +64,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         console.log('🔍 normalized roles:', roles);
 
-        // 2) Comprueba el resultado de la normalización
 
         return {
             username: raw.username,
@@ -72,7 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // login: guarda token y carga user
     const login = async (token: string) => {
         localStorage.setItem('jwt', token);
-        const me = await fetchUser(token);
+        const me = await fetchUser();
         setUser(me);
     };
 
@@ -89,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const token = localStorage.getItem('jwt');
             if (token) {
                 try {
-                    const me = await fetchUser(token);
+                    const me = await fetchUser();
                     setUser(me);
                 } catch {
                     localStorage.removeItem('jwt');

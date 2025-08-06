@@ -6,7 +6,7 @@ import { fetcher } from '../../../../lib/fetcher';
 import styles from './CreateRecipe.module.sass';
 
 export const CreateRecipe = () => {
-    // hooks siempre al inicio
+    
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +51,7 @@ export const CreateRecipe = () => {
                 body: JSON.stringify(payload),
             });
             if (!result) {
-                throw new Error('No se pudo crear la receta');
+                throw new Error('Error, recipe was not created');
             }
             router.push(`/recipes/${result.idRecipe}`);
         } catch (err: unknown) {
@@ -91,16 +91,3 @@ export const CreateRecipe = () => {
         </div>
     );
 };
-
-
-/*        "idRecipe": 4,
-        "name": "Apple-Cranberry Crisp",
-        "prepTime": "25 mins",
-        "cookTime": "40 mins",
-        "totalTime": "1 hrs 5 mins",
-        "servings": 8,
-        "ingredients": "2 pounds Granny Smith apples - peeled, cored and thinly sliced, ¾ cup cranberries, ¼ cup white sugar, 1 tablespoon ground cinnamon, 1 teaspoon ground nutmeg",
-        "steps": "Preheat the oven to 375 degrees F (190 degrees C.) Butter an 8-inch square baking dish. Mix apples, cranberries, white sugar, cinnamon, and nutmeg in a large bowl. Place in an even layer in the prepared baking dish. In the same bowl, combine oats, flour, and brown sugar for topping. Add butter pieces and mix with a fork until crumbly. Stir in pecans. Sprinkle topping over apples in the baking dish. Bake in the preheated oven until apples are tender and topping is golden brown, 40 to 50 minutes.",
-        "type": "Dessert",
-        "diet": "highsugar",
-        "rating": 4.7*/
