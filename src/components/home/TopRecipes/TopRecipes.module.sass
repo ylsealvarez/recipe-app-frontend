@@ -1,0 +1,51 @@
+.TopRecipes
+  padding: 2rem 2rem
+  background: $color-primary
+  max-width: 1200px
+  margin: 0 auto
+
+  &__title
+    text-align: center
+    font-size: 2.25rem
+    background: $gradient
+    -webkit-background-clip: text
+    -webkit-text-fill-color: transparent
+    margin-bottom: 2rem
+  
+  &__swiperContainer
+    overflow: hidden
+    position: relative
+
+  &__swiper
+    padding-bottom: 0rem
+    --swiper-navigation-color: $main-contrast
+    
+    .swiper-button-next,
+    .swiper-button-prev
+      color: $main-contrast
+      width: 2.5rem
+      height: 2.5rem
+      background: rgba($main-contrast, 0.1)
+      border-radius: 50%
+      top: 50%
+      transform: translateY(-50%)
+      &.swiper-button-next
+        right: 1rem
+      &.swiper-button-prev
+        left: 1rem
+      transition: background 0.3s ease
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover
+      background: rgba($main-contrast, 0.2)
+
+    .swiper-slide
+      transition: transform 0.4s ease, box-shadow 0.4s ease
+      opacity: 0.8
+      &:hover
+        transform: scale(1.02)
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2)
+    .swiper-slide-active
+      transform: scale(1.05)
+      opacity: 1
+  

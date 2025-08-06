@@ -1,0 +1,92 @@
+.container
+  padding: 1rem
+  max-width: 800px
+  margin: 0 auto
+
+.title
+  font-size: 4rem;
+  font-weight: 700;
+  text-align: center;
+  background: $gradient
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 1rem auto
+
+.imageWrapper 
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  img 
+    border-radius: 1rem;
+    max-height: 40vh;
+    width: 600px
+    height: auto;
+    object-fit: cover;
+  
+.metadata 
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 2.5rem
+  gap: 1rem;
+  padding: 0.5rem;
+  background: white
+  border-radius: 1rem;
+  margin: 0.5rem auto
+  width: 600px
+  justify-content: center
+  color: rgb(217, 92, 54)
+  p 
+    margin: 0.5;
+    text-align: center;
+
+    strong 
+      display: block;
+      margin-bottom: 0.5rem;
+      color: black
+    
+    
+.sectionsWrapper 
+  display: grid;
+  grid-template-columns: 1fr 1fr
+  width: 600px
+  gap: 0.5rem;
+  margin: 0.5rem auto
+
+.section 
+  background: white;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  h2 
+    font-size: 1.5rem;
+    margin: 1rem
+    border-bottom: 2px solid orange
+    padding-bottom: 0.5rem
+    color: text-color
+  li
+    color: black
+  
+
+
+// Lista de ingredientes: no numerada
+.ingredients 
+  list-style: disc inside;
+  padding-left: 1rem;
+  margin: 0
+
+
+// Pasos: lista numerada con estilo de icono
+.steps 
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  margin: 0
+  li 
+    position: relative;
+    padding-left: 3rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    
+
+    
+  

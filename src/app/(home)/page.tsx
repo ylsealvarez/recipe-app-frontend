@@ -1,9 +1,7 @@
-import Image from "next/image";
+import HomeLayout from './layout'
 
-export default function Home() {
-  return (
-    <main>
+export const runtime = "edge";
 
-    </main>
-  );
+export default function Page() {
+  return <HomeLayout />;
 }
