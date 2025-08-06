@@ -6,6 +6,8 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 const path = require('path')
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080'
+
 const nextConfig = {
     experimental: {
     optimizeCss: false,
@@ -27,15 +29,15 @@ const nextConfig = {
     return [
       {
         source: '/api/recipes/:path*',
-        destination: 'http://localhost:8080/api/recipes/:path*'
+        destination: `${API_BASE}/api/recipes/:path*`
       },
       {
         source: '/api/users/:path*',
-        destination: 'http://localhost:8080/api/users/:path*'
+        destination: `${API_BASE}/api/users/:path*`
       },
       {
         source: '/api/auth/:path*',
-        destination: 'http://localhost:8080/api/auth/:path*'
+        destination: `${API_BASE}/api/auth/:path*`
       }
     ]
   }
