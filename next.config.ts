@@ -8,7 +8,7 @@ const path = require('path')
 
 const nextConfig = {
     experimental: {
-    optimizeCss: true,
+    optimizeCss: false,
   },
   sassOptions: {
     includePaths: [path.join(__dirname, 'src/sass')],
