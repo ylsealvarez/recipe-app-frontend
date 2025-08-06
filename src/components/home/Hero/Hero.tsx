@@ -3,7 +3,6 @@ import Image from 'next/image'
 import React, { ReactNode } from 'react';
 
 export interface HeroProps {
-   
     backgroundImage: string;
     title: string;
     subtitle?: string;
@@ -43,4 +42,6 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
         </section>
     );
+
 };
+

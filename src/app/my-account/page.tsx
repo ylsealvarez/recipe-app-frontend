@@ -11,6 +11,7 @@ export default function MyAccountPage() {
             <div className={styles.container}>
                 <h1>My Account</h1>
                 <p>Please Login to see your info.</p>
+
             </div>
         );
     }

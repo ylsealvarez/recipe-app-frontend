@@ -4,6 +4,7 @@ import ScrollToTop from "app/components/ScrollToTop"
 import Link from "next/link"
 import styles from 'app/components/home/Hero/Hero.module.sass'
 
+
 export default function HomeLayout({ children }: { children?: React.ReactNode }) {
   return (
     <div>
