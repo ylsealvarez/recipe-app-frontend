@@ -9,9 +9,6 @@ const path = require('path')
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080'
 
 const nextConfig = {
-    experimental: {
-    optimizeCss: false,
-  },
   sassOptions: {
     includePaths: [path.join(__dirname, 'src/sass')],
     prependData: `@use "variables" as *`,
