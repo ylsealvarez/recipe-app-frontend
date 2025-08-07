@@ -19,7 +19,7 @@ export const ModifyRecipe = () => {
         }
     }, [user, router]);
 
-    // Esperamos user y rol antes de mostrar el form
+  
     if (!user || !user.roles.includes('ROLE_PROFESSIONAL')) {
         return null;
     }
@@ -49,6 +49,7 @@ export const ModifyRecipe = () => {
             type: data.get('type'),
             diet: data.get('diet'),
             isPremium: data.get('isPremium') === 'on',
+            imagenUrl: data.get('imagenUrl'),
         };
 
         try {
@@ -72,6 +73,7 @@ export const ModifyRecipe = () => {
         <div className={styles.ModifyRecipe}>
             <h1 className={styles.ModifyRecipe__title}>Modify Recipe</h1>
             <form onSubmit={handleSubmit} className={styles.ModifyRecipe__form}>
+                <input type="hidden" name="imagenUrl" value="/images/donut.webp"/>
                 <label>
                     <input type="checkbox" name="isPremium" /> Premium
                 </label>
