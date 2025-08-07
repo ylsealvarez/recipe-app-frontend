@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import { fetcher } from '../../../../lib/fetcher'
 import styles from './RecipeReviews.module.sass'
 
@@ -24,7 +24,7 @@ export function RecipeReviews({ idRecipe }: Props) {
   };
 
   const {
-    data: reviews = [],
+    data: reviews = [], mutate
   } = useSWR<Review[]>(
     `/api/recipes/${idRecipe}/review`,
     fetchReviews
@@ -47,7 +47,7 @@ export function RecipeReviews({ idRecipe }: Props) {
       setRating(0);
       setComment('');
       // Refrescar listado
-      await fetchReviews(`/api/recipes/${idRecipe}/review`);
+      await mutate()
     } catch (err: unknown) {
       console.error(err);
     }
