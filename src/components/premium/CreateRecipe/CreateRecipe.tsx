@@ -6,7 +6,7 @@ import { fetcher } from '../../../../lib/fetcher';
 import styles from './CreateRecipe.module.sass';
 
 export const CreateRecipe = () => {
-    
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +41,7 @@ export const CreateRecipe = () => {
             type: data.get('type'),
             diet: data.get('diet'),
             isPremium: data.get('isPremium') === 'on',
+            imagenUrl: data.get('imagenUrl'),
         };
 
         try {
@@ -66,6 +67,7 @@ export const CreateRecipe = () => {
         <div className={styles.CreateRecipe}>
             <h1 className={styles.CreateRecipe__title}>Create Recipe</h1>
             <form onSubmit={handleSubmit} className={styles.CreateRecipe__form}>
+                <input type="hidden" name="imagenUrl" value="/images/donut.webp"/>
                 <label>
                     <input type="checkbox" name="isPremium" /> Premium
                 </label>
