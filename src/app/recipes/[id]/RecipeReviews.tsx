@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import useSWR, { mutate } from 'swr'
+import useSWR from 'swr'
 import { fetcher } from '../../../../lib/fetcher'
 import styles from './RecipeReviews.module.sass'
 
