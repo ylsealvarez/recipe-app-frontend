@@ -41,7 +41,7 @@ export function RecipeReviews({ idRecipe }: Props) {
         method: 'POST',
         useApi: true,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ alias, rating, comment }),
+        body: JSON.stringify({ authorAlias: alias, rating, comment }),
       });
       setAlias('');
       setRating(0);
