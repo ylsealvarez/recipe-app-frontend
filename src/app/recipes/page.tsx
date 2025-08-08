@@ -2,7 +2,8 @@
 import { Hero } from 'app/components/home/Hero/Hero';
 import { SearchBar } from 'app/components/shared/SearchBar/SearchBar';
 import { RecipeList } from 'app/components/recipelist/RecipeList';
-import styles from 'app/components/home/Hero/Hero.module.sass';
+import heroStyles from 'app/components/home/Hero/Hero.module.sass';
+import pageStyles from './page.module.sass'
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import useSWR from 'swr';
@@ -16,6 +17,7 @@ export default function RecipesPage() {
     const { user } = useAuth();
     const shouldFetch = Boolean(user);
 
+    // === Favoritos (igual que antes) ===
     const fetchFavorites = async (url: string): Promise<Recipe[]> => {
         const data = await fetcher<Recipe[]>(url, { useApi: true });
         return data ?? [];
@@ -25,13 +27,13 @@ export default function RecipesPage() {
         shouldFetch ? '/api/recipes/favorites' : null,
         fetchFavorites
     );
-
     const favoritesIds = favorites.map(r => r.idRecipe);
 
-    const initialIngredient = searchParams.get('ingredient') || '';
+    // === Búsqueda (opción 2): NO usamos 'ingredient' en la URL ===
     const initialPage = Number(searchParams.get('page') || '0');
 
-    const [ingredient, setIngredient] = useState(initialIngredient);
+    const [ingredientInput, setIngredientInput] = useState(''); // lo que escribe el usuario
+    const [query, setQuery] = useState('');                     // término confirmado (no va a la URL)
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [page, setPage] = useState(initialPage);
     const [elements] = useState(12);
@@ -40,11 +42,11 @@ export default function RecipesPage() {
     const [error, setError] = useState<string | null>(null);
 
     const buildUrl = useCallback(() => {
-        if (ingredient.trim()) {
-            return `/api/recipes/contains/${encodeURIComponent(ingredient)}`;
+        if (query.trim()) {
+            return `/api/recipes/contains/${encodeURIComponent(query)}`;
         }
         return `/api/recipes/all?page=${page}&elements=${elements}&sortBy=name&sortDirection=ASC`;
-    }, [ingredient, page, elements]);
+    }, [query, page, elements]);
 
     const fetchRecipes = useCallback(async () => {
         setLoading(true);
@@ -54,8 +56,9 @@ export default function RecipesPage() {
             if (!res.ok) throw new Error(`Status ${res.status}`);
             const raw = await res.json();
 
-            if (ingredient.trim()) {
+            if (query.trim()) {
                 setRecipes(raw as Recipe[]);
+                setTotal(0);
             } else {
                 const pageData = raw as PageResponse;
                 setRecipes(pageData.content);
@@ -66,49 +69,65 @@ export default function RecipesPage() {
         } finally {
             setLoading(false);
         }
-    }, [buildUrl, ingredient]);
+    }, [buildUrl, query]);
 
+    // Actualiza URL: solo 'page' cuando NO hay búsqueda; sin 'ingredient' nunca
     useEffect(() => {
-        router.push(
-            `/recipes?ingredient=${encodeURIComponent(ingredient)}&page=${page}`,
-            { scroll: false }
-        );
+        const params = new URLSearchParams();
+        if (!query.trim()) {
+            params.set('page', String(page));
+        }
+        const href = params.toString() ? `/recipes?${params.toString()}` : '/recipes';
+        router.push(href, { scroll: false });
+
         fetchRecipes();
-    }, [ingredient, page, fetchRecipes, router]);
+    }, [query, page, fetchRecipes, router]);
 
     const onSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setPage(0);
-        fetchRecipes();
+        setQuery(ingredientInput);   // dispara la búsqueda
+        // Si quieres limpiar el input después de buscar, descomenta:
+        setIngredientInput('');
     };
+
+    const isFiltered = query.trim().length > 0;
+    const noResults = !loading && !error && isFiltered && recipes.length === 0;
 
     return (
         <>
-            <div className={styles.searchStrip}>
+            <div className={pageStyles.searchStrip}>
                 <SearchBar
-                    ingredient={ingredient}
-                    onIngredientChange={setIngredient}
+                    ingredient={ingredientInput}
+                    onIngredientChange={setIngredientInput}
                     onSearch={onSearch}
                 />
             </div>
+
             <Hero
                 backgroundImage="/images/hero2.webp"
                 title="Check out +200 exclusive recipes"
-                className={`${styles['Hero--noOverlay']} ${styles['Hero--rightAlign']}`}>
+                className={`${heroStyles['Hero--noOverlay']} ${heroStyles['Hero--rightAlign']}`}
+            >
                 <Link href="/recipes" passHref>
-                    <button className={styles.Hero__overlay__button}>Explore Premium</button>
+                    <button className={heroStyles.Hero__overlay__button}>Explore Premium</button>
                 </Link>
             </Hero>
 
-            <main className={styles.RecipesPage}>
-                {error && <div className={styles.error}>Error: {error}</div>}
+            <main className={pageStyles.RecipesPage}>
+                {error && <div className={pageStyles.error}>Error: {error}</div>}
+
                 {loading ? (
                     <p>Loading…</p>
+                ) : noResults ? (
+                    <div className={pageStyles.noResults}>
+                        No recipes found for “{query}”.
+                    </div>
                 ) : (
                     <RecipeList
                         recipes={recipes}
-                        page={ingredient.trim() ? undefined : page}
-                        totalPages={ingredient.trim() ? undefined : totalPages}
+                        page={isFiltered ? undefined : page}
+                        totalPages={isFiltered ? undefined : totalPages}
                         onPageChange={setPage}
                         favoritesIds={favoritesIds}
                     />
@@ -117,4 +136,3 @@ export default function RecipesPage() {
         </>
     );
 }
-

@@ -67,7 +67,7 @@ export const CreateRecipe = () => {
         <div className={styles.CreateRecipe}>
             <h1 className={styles.CreateRecipe__title}>Create Recipe</h1>
             <form onSubmit={handleSubmit} className={styles.CreateRecipe__form}>
-                <input type="hidden" name="imagenUrl" value="/images/donut.webp"/>
+                <input type="hidden" name="imagenUrl" value="/images/donut.webp" />
                 <label>
                     <input type="checkbox" name="isPremium" /> Premium
                 </label>
